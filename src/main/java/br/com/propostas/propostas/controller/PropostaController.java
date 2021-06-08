@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import org.springframework.web.util.UriComponentsBuilder;
+
 
 import br.com.propostas.propostas.proposta.domain.Proposta;
 import br.com.propostas.propostas.proposta.domain.PropostaRequestDTO;
@@ -26,13 +28,17 @@ public class PropostaController {
 	@PostMapping
 	public ResponseEntity<?> novaProposta(@RequestBody @Valid PropostaRequestDTO propostaDTO, UriComponentsBuilder uriBuilder){
 		
-		Proposta proposta = propostaDTO.transformarParaProposta();
+		Proposta possivelProposta = propostaRepository.findByDocumento(propostaDTO.getDocumento());
 		
-	    propostaRepository.save(proposta);
-		
-		URI uri = uriBuilder.path("/propostas/{id}").buildAndExpand(proposta.getId()).toUri();
-		
-		return ResponseEntity.created(uri).build();
+		if(possivelProposta==null) {
+			Proposta proposta = propostaDTO.transformarParaProposta();
+		    propostaRepository.save(proposta);
+		    
+		    URI uri = uriBuilder.path("/propostas/{id}").buildAndExpand(proposta.getId()).toUri();
+			
+			return ResponseEntity.created(uri).build();
+		}else 
+			return ResponseEntity.unprocessableEntity().build();
 		
 	}
 
