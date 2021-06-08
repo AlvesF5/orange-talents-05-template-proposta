@@ -7,7 +7,7 @@ import javax.validation.constraints.Positive;
 
 public class PropostaRequestDTO {
 	
-	@NotBlank
+	@NotBlank @CPForCNPJ
 	private String documento;
 	@NotBlank @Email
 	private String email;
