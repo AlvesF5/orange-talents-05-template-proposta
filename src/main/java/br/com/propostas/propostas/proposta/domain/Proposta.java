@@ -1,11 +1,18 @@
 package br.com.propostas.propostas.proposta.domain;
 
+
+
 import javax.persistence.Entity;
+
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+
+
+import br.com.propostas.propostas.cartao.domain.Cartao;
 
 @Entity
 public class Proposta {
@@ -23,7 +30,10 @@ public class Proposta {
 	
 	private Double salario;
 	@Enumerated(EnumType.STRING)
-	private EstadoProposta estado_proposta;
+	private EstadoProposta estadoProposta;
+	
+	@OneToOne
+	private Cartao cartao;
 	
 	
 	@Deprecated
@@ -70,13 +80,19 @@ public class Proposta {
 	}
 
 
-	public EstadoProposta getEstado_proposta() {
-		return estado_proposta;
+	public EstadoProposta getEstadoProposta() {
+		return estadoProposta;
 	}
 
 
 	public void atualizaEstadoProposta(EstadoProposta estado_proposta) {
-		this.estado_proposta = estado_proposta;
+		
+		this.estadoProposta = estado_proposta;
+	}
+
+
+	public void associaCartao(Cartao cartao) {	
+		this.cartao = cartao;
 	}
 
 

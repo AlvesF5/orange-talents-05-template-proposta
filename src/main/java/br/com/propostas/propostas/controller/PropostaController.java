@@ -1,12 +1,17 @@
 package br.com.propostas.propostas.controller;
 
 import java.net.URI;
+import java.util.List;
 
-
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +22,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 import br.com.propostas.propostas.analiseproposta.AnaliseProposta;
 import br.com.propostas.propostas.analiseproposta.RequestAnalise;
 import br.com.propostas.propostas.analiseproposta.RespostaAnalise;
+import br.com.propostas.propostas.cartao.client.CartaoRequest;
+import br.com.propostas.propostas.cartao.client.CartaoResponse;
+import br.com.propostas.propostas.cartao.client.CriaCartaoClient;
+import br.com.propostas.propostas.cartao.domain.Cartao;
+import br.com.propostas.propostas.cartao.domain.CartaoRepository;
 import br.com.propostas.propostas.proposta.domain.EstadoProposta;
 import br.com.propostas.propostas.proposta.domain.Proposta;
 import br.com.propostas.propostas.proposta.domain.PropostaRequestDTO;
@@ -33,8 +43,15 @@ public class PropostaController {
 	@Autowired
 	private AnaliseProposta analiseProposta;
 	
+	
+	
 	private RespostaAnalise respostaAnalise;
 	private RequestAnalise requestAnalise;
+	
+	
+	@PersistenceContext
+	private EntityManager manager;
+	
 	
 	@PostMapping
 	public ResponseEntity<?> novaProposta(@RequestBody @Valid PropostaRequestDTO propostaDTO, UriComponentsBuilder uriBuilder){
@@ -73,5 +90,8 @@ public class PropostaController {
 			return ResponseEntity.unprocessableEntity().build();
 		
 	}
+	
+	
+
 
 }
