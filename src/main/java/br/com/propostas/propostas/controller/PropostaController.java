@@ -2,6 +2,7 @@ package br.com.propostas.propostas.controller;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +32,7 @@ import br.com.propostas.propostas.cartao.domain.CartaoRepository;
 import br.com.propostas.propostas.proposta.domain.EstadoProposta;
 import br.com.propostas.propostas.proposta.domain.Proposta;
 import br.com.propostas.propostas.proposta.domain.PropostaRequestDTO;
+import br.com.propostas.propostas.proposta.domain.PropostaResponse;
 import br.com.propostas.propostas.repository.PropostaRepository;
 import feign.FeignException;
 
@@ -89,6 +92,18 @@ public class PropostaController {
 		
 			return ResponseEntity.unprocessableEntity().build();
 		
+	}
+	
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<PropostaResponse> buscarProposta(@PathVariable("id") Long id){
+		Optional<Proposta> proposta = propostaRepository.findById(id);
+		
+		if(proposta.isPresent()) {
+			return ResponseEntity.ok(new PropostaResponse(proposta));
+		}
+		
+		return ResponseEntity.notFound().build();
 	}
 	
 	

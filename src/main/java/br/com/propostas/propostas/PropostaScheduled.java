@@ -4,8 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -20,6 +19,7 @@ import br.com.propostas.propostas.cartao.domain.CartaoRepository;
 import br.com.propostas.propostas.proposta.domain.EstadoProposta;
 import br.com.propostas.propostas.proposta.domain.Proposta;
 import br.com.propostas.propostas.repository.PropostaRepository;
+import feign.FeignException;
 
 @Component
 @ConditionalOnProperty(value="scheduling.enabled", matchIfMissing = true)
@@ -42,22 +42,28 @@ public class PropostaScheduled {
 	
 		List<Proposta> propostas = propostaRepository.findByEstadoPropostaAndCartaoIsNull(EstadoProposta.ELEGIVEL);
 		
-		propostas.forEach(
-				proposta -> {
-								
-					CartaoRequest  cartaoRequest = new CartaoRequest(proposta.getDocumento(), proposta.getNome(), proposta.getId().toString());
-					CartaoResponse cartaoResponse = criarCartao.cartaoResponse(cartaoRequest);
-					
-					Cartao cartao = new Cartao(cartaoResponse.getId().toString(),cartaoResponse.getEmitidoEm(),cartaoResponse.getTitular(),cartaoResponse.getLimite(),cartaoResponse.getVencimento().getDia());
-					
-					cartaoRepository.save(cartao);
-					
-					proposta.associaCartao(cartao);
-					
-					propostaRepository.save(proposta);
-				}
-				);
+		try {
+			propostas.forEach(
+					proposta -> {
+									
+						CartaoRequest  cartaoRequest = new CartaoRequest(proposta.getDocumento(), proposta.getNome(), proposta.getId().toString());
+						CartaoResponse cartaoResponse = criarCartao.cartaoResponse(cartaoRequest);
+						
+						Cartao cartao = new Cartao(cartaoResponse.getId().toString(),cartaoResponse.getEmitidoEm(),cartaoResponse.getTitular(),cartaoResponse.getLimite(),cartaoResponse.getVencimento().getDia());
+						
+						cartaoRepository.save(cartao);
+						
+						proposta.associaCartao(cartao);
+						
+						propostaRepository.save(proposta);
+					}
+					);
+
+		} catch (FeignException e) {
+			e.printStackTrace();
+		}
 		
+				
 		
 		
 	}

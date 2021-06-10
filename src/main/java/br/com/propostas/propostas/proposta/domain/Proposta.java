@@ -86,7 +86,6 @@ public class Proposta {
 
 
 	public void atualizaEstadoProposta(EstadoProposta estado_proposta) {
-		
 		this.estadoProposta = estado_proposta;
 	}
 
