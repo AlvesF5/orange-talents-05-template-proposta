@@ -1,17 +1,17 @@
 package br.com.propostas.propostas.controller;
 
 import java.net.URI;
-import java.util.List;
+
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,11 +24,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import br.com.propostas.propostas.analiseproposta.AnaliseProposta;
 import br.com.propostas.propostas.analiseproposta.RequestAnalise;
 import br.com.propostas.propostas.analiseproposta.RespostaAnalise;
-import br.com.propostas.propostas.cartao.client.CartaoRequest;
-import br.com.propostas.propostas.cartao.client.CartaoResponse;
-import br.com.propostas.propostas.cartao.client.CriaCartaoClient;
-import br.com.propostas.propostas.cartao.domain.Cartao;
-import br.com.propostas.propostas.cartao.domain.CartaoRepository;
 import br.com.propostas.propostas.proposta.domain.EstadoProposta;
 import br.com.propostas.propostas.proposta.domain.Proposta;
 import br.com.propostas.propostas.proposta.domain.PropostaRequestDTO;
@@ -76,12 +71,12 @@ public class PropostaController {
 			    	    
 			    proposta.atualizaEstadoProposta(respostaAnalise.getResultadoSolicitacao().retornaResultado());
 			    
-			    propostaRepository.flush();
+			    propostaRepository.save(proposta);
 			    		
 				
 			} catch (FeignException.UnprocessableEntity e) {
 				proposta.atualizaEstadoProposta(EstadoProposta.NAO_ELEGIVEL);
-				propostaRepository.flush();
+				propostaRepository.save(proposta);
 				System.out.println(e.getMessage());
 			}
 			
