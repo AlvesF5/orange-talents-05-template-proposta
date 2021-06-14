@@ -1,6 +1,7 @@
 package br.com.propostas.propostas.biometria;
 
-import java.util.Optional;
+import java.time.LocalDateTime;
+
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,6 +17,7 @@ public class Biometria {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	private String biometria;
+	private LocalDateTime criadaEm = LocalDateTime.now();
 	@ManyToOne
 	private Cartao cartao;
 	
@@ -48,6 +50,11 @@ public class Biometria {
 
 	public Cartao getCartao() {
 		return cartao;
+	}
+
+
+	public LocalDateTime getCriadaEm() {
+		return criadaEm;
 	}
 
 
