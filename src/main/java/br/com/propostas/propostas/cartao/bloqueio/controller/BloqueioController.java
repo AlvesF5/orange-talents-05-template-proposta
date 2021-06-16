@@ -47,11 +47,11 @@ public class BloqueioController {
 	@PostMapping("/{idCartao}")
 	public ResponseEntity<?> novoBloqueio(@PathVariable("idCartao") String idCartao, @RequestHeader(value = "User-Agent") String userAgent, UriComponentsBuilder uriBuilder){
 			
-		Cartao cartao = cartaoRepository.findById(idCartao);
+		Optional<Cartao> cartao = cartaoRepository.findById(idCartao);
 		
-		Optional<Bloqueio> possivelBloqueio = bloqueioRepository.findByCartao(cartao);
+		Optional<Bloqueio> possivelBloqueio = bloqueioRepository.findByCartao(cartao.get());
 		
-		if(cartao!=null) {
+		if(cartao.isPresent()) {
 			if(possivelBloqueio.isPresent()) {
 				 return ResponseEntity.unprocessableEntity().build();
 			}
@@ -60,14 +60,14 @@ public class BloqueioController {
 			Bloqueio bloqueio = bloqueioRequest.transformarParaBloqueio();
 			
 			BloqueioClientRequest bloqueioClientRequest = new BloqueioClientRequest("Proposta");
-			BloqueioClientResponse bloqueioResponse = bloqueioClient.respostaBloqueio(cartao.getId(),bloqueioClientRequest);
+			BloqueioClientResponse bloqueioResponse = bloqueioClient.respostaBloqueio(cartao.get().getId(),bloqueioClientRequest);
 			System.out.println(bloqueioResponse.getResultado());
 			
 			try {
-				bloqueio.associaCartao(cartao);
+				bloqueio.associaCartao(cartao.get());
 				bloqueioRepository.save(bloqueio);
-				cartao.atualizaEstadoBloqueio(EstadoBloqueio.BLOQUEADO);
-				cartaoRepository.save(cartao);
+				cartao.get().atualizaEstadoBloqueio(EstadoBloqueio.BLOQUEADO);
+				cartaoRepository.save(cartao.get());
 				URI uri = uriBuilder.path("/bloqueios/{id}").buildAndExpand(bloqueio.getId()).toUri();
 				return ResponseEntity.created(uri).build();
 				

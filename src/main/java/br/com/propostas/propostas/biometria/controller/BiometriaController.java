@@ -2,7 +2,7 @@ package br.com.propostas.propostas.biometria.controller;
 
 import java.net.URI;
 import java.util.Arrays;
-
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -10,7 +10,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,16 +35,16 @@ public class BiometriaController {
 	@PostMapping("/{idCartao}")
 	public ResponseEntity<?> novaBiometria(@PathVariable("idCartao") String idCartao, @RequestBody @Valid BiometriaRequest biometriaRequest, UriComponentsBuilder uriBuilder){
 		
-		Cartao cartao = cartaoRepository.findById(idCartao);
+		Optional<Cartao> cartao = cartaoRepository.findById(idCartao);
 		
 		Biometria biometria = biometriaRequest.transformarParaBiometria();
 		
 	 
-		if(cartao!=null) {
-			biometria.associaCartao(cartao);
+		if(cartao.isPresent()) {
+			biometria.associaCartao(cartao.get());
 			biometriaRepository.save(biometria);
 			URI uri = uriBuilder.path("/biometrias/{id}").buildAndExpand(biometria.getId()).toUri();
-			cartao.adicionaBiometria(Arrays.asList(biometria));	
+			cartao.get().adicionaBiometria(Arrays.asList(biometria));	
 			return ResponseEntity.created(uri).build();
 			
 		
