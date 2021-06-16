@@ -1,4 +1,4 @@
-package br.com.propostas.propostas.analiseproposta;
+package br.com.propostas.propostas.analiseproposta.domain;
 
 import org.springframework.boot.jackson.JsonComponent;
 

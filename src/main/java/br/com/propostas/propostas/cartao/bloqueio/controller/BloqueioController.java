@@ -19,11 +19,16 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.propostas.propostas.cartao.bloqueio.Bloqueio;
-import br.com.propostas.propostas.cartao.bloqueio.BloqueioRepository;
-import br.com.propostas.propostas.cartao.bloqueio.BloqueioRequest;
+import br.com.propostas.propostas.cartao.bloqueio.client.BloqueioClient;
+import br.com.propostas.propostas.cartao.bloqueio.client.BloqueioClientRequest;
+import br.com.propostas.propostas.cartao.bloqueio.client.BloqueioClientResponse;
+import br.com.propostas.propostas.cartao.bloqueio.domain.Bloqueio;
+import br.com.propostas.propostas.cartao.bloqueio.domain.BloqueioRequest;
+import br.com.propostas.propostas.cartao.bloqueio.repository.BloqueioRepository;
 import br.com.propostas.propostas.cartao.domain.Cartao;
 import br.com.propostas.propostas.cartao.domain.CartaoRepository;
+import br.com.propostas.propostas.cartao.domain.EstadoBloqueio;
+import feign.FeignException.FeignClientException;
 
 @RestController
 @RequestMapping("/bloqueios")
@@ -35,12 +40,13 @@ public class BloqueioController {
 	@Autowired
 	private BloqueioRepository bloqueioRepository;
 	
+	@Autowired
+	private BloqueioClient bloqueioClient;
+	
 		
 	@PostMapping("/{idCartao}")
 	public ResponseEntity<?> novoBloqueio(@PathVariable("idCartao") String idCartao, @RequestHeader(value = "User-Agent") String userAgent, UriComponentsBuilder uriBuilder){
 			
-		String ipAddress = fetchClientIpAddr();
-		
 		Cartao cartao = cartaoRepository.findById(idCartao);
 		
 		Optional<Bloqueio> possivelBloqueio = bloqueioRepository.findByCartao(cartao);
@@ -49,13 +55,29 @@ public class BloqueioController {
 			if(possivelBloqueio.isPresent()) {
 				 return ResponseEntity.unprocessableEntity().build();
 			}
-			
+			String ipAddress = fetchClientIpAddr();
 			BloqueioRequest bloqueioRequest = new BloqueioRequest(ipAddress, userAgent);
 			Bloqueio bloqueio = bloqueioRequest.transformarParaBloqueio();
-			bloqueio.associaCartao(cartao);
-			bloqueioRepository.save(bloqueio);
-			URI uri = uriBuilder.path("/bloqueios/{id}").buildAndExpand(bloqueio.getId()).toUri();
-			return ResponseEntity.created(uri).build();
+			
+			BloqueioClientRequest bloqueioClientRequest = new BloqueioClientRequest("Proposta");
+			BloqueioClientResponse bloqueioResponse = bloqueioClient.respostaBloqueio(cartao.getId(),bloqueioClientRequest);
+			System.out.println(bloqueioResponse.getResultado());
+			
+			try {
+				bloqueio.associaCartao(cartao);
+				bloqueioRepository.save(bloqueio);
+				cartao.atualizaEstadoBloqueio(EstadoBloqueio.BLOQUEADO);
+				cartaoRepository.save(cartao);
+				URI uri = uriBuilder.path("/bloqueios/{id}").buildAndExpand(bloqueio.getId()).toUri();
+				return ResponseEntity.created(uri).build();
+				
+				
+			} catch (FeignClientException fe) {
+				fe.printStackTrace();
+				return ResponseEntity.badRequest().build();
+			}
+			
+			
 			
 		}
 			
@@ -65,6 +87,7 @@ public class BloqueioController {
 		
 	}
 	
+
 		
 	protected String fetchClientIpAddr() {
 	    HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.getRequestAttributes())).getRequest();
@@ -73,6 +96,9 @@ public class BloqueioController {
 	    Assert.isTrue(ip.chars().filter($ -> $ == '.').count() == 3, "Illegal IP: " + ip);
 	    return ip;
 	}
+	
+	
+	
 	
 
 }

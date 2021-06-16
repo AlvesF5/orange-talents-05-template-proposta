@@ -1,4 +1,4 @@
-package br.com.propostas.propostas.cartao.bloqueio;
+package br.com.propostas.propostas.cartao.bloqueio.domain;
 
 public class BloqueioRequest {
 	

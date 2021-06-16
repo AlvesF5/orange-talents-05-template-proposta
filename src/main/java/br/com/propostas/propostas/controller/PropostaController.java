@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.propostas.propostas.analiseproposta.AnaliseProposta;
-import br.com.propostas.propostas.analiseproposta.RequestAnalise;
-import br.com.propostas.propostas.analiseproposta.RespostaAnalise;
+import br.com.propostas.propostas.analiseproposta.client.AnaliseProposta;
+import br.com.propostas.propostas.analiseproposta.domain.RequestAnalise;
+import br.com.propostas.propostas.analiseproposta.domain.RespostaAnalise;
 import br.com.propostas.propostas.proposta.domain.EstadoProposta;
 import br.com.propostas.propostas.proposta.domain.Proposta;
 import br.com.propostas.propostas.proposta.domain.PropostaRequestDTO;

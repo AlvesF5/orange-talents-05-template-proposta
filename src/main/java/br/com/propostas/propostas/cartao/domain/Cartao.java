@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
@@ -19,14 +21,13 @@ public class Cartao {
 	private int vencimento;
 	@OneToMany(mappedBy="cartao")
 	private List<Biometria> biometria;
+	@Enumerated(EnumType.STRING)
+	private EstadoBloqueio estadoBloqueio = EstadoBloqueio.NAO_BLOQUEADO;
 	
-	
-	
+
 	@Deprecated
 	public Cartao() {
 	}
-
-
 
 	public Cartao(String id, LocalDateTime emitidoEm, String titular, Double limite,  int vencimento) {
 		this.id = id;
@@ -63,13 +64,19 @@ public class Cartao {
 	public List<Biometria> getBiometria() {
 		return biometria;
 	}
-
-
+	
+	public EstadoBloqueio getEstadoBloqueio() {
+		return estadoBloqueio;
+	}
 
 	public void adicionaBiometria(List<Biometria> biometria) {
 		this.biometria = biometria;
 	}
 	
+	public void atualizaEstadoBloqueio(EstadoBloqueio estadoBloqueio) {
+		this.estadoBloqueio = estadoBloqueio;
+	}
+
 	
 	
 	

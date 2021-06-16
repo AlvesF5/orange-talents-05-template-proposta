@@ -1,4 +1,4 @@
-package br.com.propostas.propostas.analiseproposta;
+package br.com.propostas.propostas.analiseproposta.domain;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;

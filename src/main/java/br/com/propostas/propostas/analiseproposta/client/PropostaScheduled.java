@@ -1,4 +1,4 @@
-package br.com.propostas.propostas;
+package br.com.propostas.propostas.analiseproposta.client;
 
 import java.util.List;
 
