@@ -55,6 +55,7 @@ public class BloqueioController {
 			if(possivelBloqueio.isPresent()) {
 				 return ResponseEntity.unprocessableEntity().build();
 			}
+			
 			String ipAddress = fetchClientIpAddr();
 			BloqueioRequest bloqueioRequest = new BloqueioRequest(ipAddress, userAgent);
 			Bloqueio bloqueio = bloqueioRequest.transformarParaBloqueio();
@@ -64,14 +65,14 @@ public class BloqueioController {
 			System.out.println(bloqueioResponse.getResultado());
 			
 			try {
+				
 				bloqueio.associaCartao(cartao.get());
 				bloqueioRepository.save(bloqueio);
 				cartao.get().atualizaEstadoBloqueio(EstadoBloqueio.BLOQUEADO);
 				cartaoRepository.save(cartao.get());
 				URI uri = uriBuilder.path("/bloqueios/{id}").buildAndExpand(bloqueio.getId()).toUri();
 				return ResponseEntity.created(uri).build();
-				
-				
+								
 			} catch (FeignClientException fe) {
 				fe.printStackTrace();
 				return ResponseEntity.badRequest().build();

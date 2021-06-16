@@ -21,7 +21,12 @@ import br.com.propostas.propostas.cartao.domain.Cartao;
 import br.com.propostas.propostas.cartao.domain.CartaoRepository;
 import br.com.propostas.propostas.cartao.viagem.AvisoViagem;
 import br.com.propostas.propostas.cartao.viagem.AvisoViagemRequest;
+import br.com.propostas.propostas.cartao.viagem.client.AvisoViagemClient;
+import br.com.propostas.propostas.cartao.viagem.client.AvisoViagemClientRequest;
+
 import br.com.propostas.propostas.cartao.viagem.repository.AvisoViagemRepository;
+import feign.FeignException;
+
 
 @RestController
 @RequestMapping("/avisoviagens")
@@ -31,6 +36,8 @@ public class AvisoViagemController {
 	private AvisoViagemRepository avisoViagemRepository;
 	@Autowired
 	private CartaoRepository cartaoRepository;
+	@Autowired
+	private AvisoViagemClient avisoViagemClient;
 	
 	@PostMapping("/{idCartao}")
 	public ResponseEntity<?> novoAvisoViagem(@PathVariable("idCartao") String idCartao, @RequestHeader(value = "User-Agent") String userAgent, 
@@ -42,8 +49,21 @@ public class AvisoViagemController {
 		
 		if(cartao.isPresent()) {
 			AvisoViagem avisoViagem = avisoViagemRequest.transformarParaAvisoViagem(idCartao, ipClient, userAgent);
-			avisoViagemRepository.save(avisoViagem);
-			return ResponseEntity.ok().build();
+			
+			
+		
+			
+			try {
+				avisoViagemClient.respostaAvisoViagem(cartao.get().getId(), new AvisoViagemClientRequest(avisoViagem.getDestino(), avisoViagem.getDataTerminoViagem()));
+				avisoViagemRepository.save(avisoViagem);
+				return ResponseEntity.ok().build();
+			} catch (FeignException fe) {
+				fe.printStackTrace();
+				return ResponseEntity.unprocessableEntity().body("Erro ao salvar aviso");
+			}
+			
+		
+			
 		}
 		
 		return ResponseEntity.notFound().build();
