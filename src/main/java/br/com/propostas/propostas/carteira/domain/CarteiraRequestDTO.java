@@ -26,8 +26,6 @@ public class CarteiraRequestDTO {
 	}
 
 
-	
-
 	public NomeCarteira getCarteira() {
 		return carteira;
 	}

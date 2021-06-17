@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class CarteiraController {
 
 	
 	@PostMapping("/{idCartao}")
-	public ResponseEntity<?> novaCarteira(@PathVariable("idCartao") String idCartao, @RequestBody CarteiraRequestDTO carteiraRequestDTO, UriComponentsBuilder uriBuilder){
+	public ResponseEntity<?> novaCarteira(@PathVariable("idCartao") String idCartao, @RequestBody @Valid CarteiraRequestDTO carteiraRequestDTO, UriComponentsBuilder uriBuilder){
 		
 		Optional<Cartao> cartao = cartaoRepository.findById(idCartao);
 		
