@@ -49,10 +49,7 @@ public class AvisoViagemController {
 		
 		if(cartao.isPresent()) {
 			AvisoViagem avisoViagem = avisoViagemRequest.transformarParaAvisoViagem(idCartao, ipClient, userAgent);
-			
-			
-		
-			
+					
 			try {
 				avisoViagemClient.respostaAvisoViagem(cartao.get().getId(), new AvisoViagemClientRequest(avisoViagem.getDestino(), avisoViagem.getDataTerminoViagem()));
 				avisoViagemRepository.save(avisoViagem);
