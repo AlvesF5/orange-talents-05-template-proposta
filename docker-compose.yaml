@@ -61,7 +61,7 @@ services:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: Pa55w0rd
       POSTGRES_PORT_5432_TCP_ADDR: 127.0.0.1
-      #KEYCLOAK_FRONTEND_URL: http://keycloak:8080/auth
+      KEYCLOAK_FRONTEND_URL: http://keycloak:8080/auth
 
   analise:
     image: 'zupacademy/analise-financeira'
@@ -104,23 +104,28 @@ services:
     - "3307:3306"
 
  
-  #propostas:
-   #image: alvesf5/propostas:v7
-   #container_name: propostas-app
-   #restart: on-failure
-   #depends_on:
-    #- mysql-db
-    #- analise
-    #- contas
-    #- keycloak
-   #environment:
-    #SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/propostas
-    #PROPOSTA_ANALISE: http://analise:9999
-    #SERVICO_CARTAO: http://contas:8888
-    #KEYCLOAK_ISSUER_URI: http://keycloack:8080/auth/realms/nosso-cartao
-    #KEYCLOAK_JWKS_URI: http://keycloack:8080/auth/realms/nosso-cartao/protocol/openid-connect/certs
-   #ports:
-    #- "8080:8080"
+  propostas:
+   image: alvesf5/propostas:v16
+   container_name: propostas-app
+   restart: on-failure
+   depends_on:
+    - mysql-db
+    - analise
+    - contas
+    - keycloak
+   environment:
+    SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/propostas
+    PROPOSTA_ANALISE: http://analise:9999
+    SERVICO_CARTAO: http://contas:8888
+    KEYCLOAK_ISSUER_URI: http://keycloack:18080/auth/realms/nosso-cartao
+    KEYCLOAK_JWKS_URI: http://keycloack:18080/auth/realms/nosso-cartao/protocol/openid-connect/certs
+    HEALTH_PROPOSTA_URL: http://analise
+    HEALTH_PROPOSTA_PORTA: 9999
+    HEALTH_CARTAO_URL: http://contas
+    HEALTH_CARTAO_PORTA: 
+    JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+   ports:
+    - "8080:8080"
 
   jaeger:
     image: jaegertracing/all-in-one
