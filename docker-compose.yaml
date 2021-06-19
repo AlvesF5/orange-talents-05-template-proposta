@@ -105,7 +105,7 @@ services:
 
  
   propostas:
-   image: alvesf5/propostas:v16
+   image: alvesf5/propostas:v20
    container_name: propostas-app
    restart: on-failure
    depends_on:
@@ -124,6 +124,8 @@ services:
     HEALTH_CARTAO_URL: http://contas
     HEALTH_CARTAO_PORTA: 
     JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+    SERVICO_PROMETHEUS: http://prometheus:9090
+    ACTUATOR_PROMETHEUS: http://prometheus:8080/actuator/prometheus
    ports:
     - "8080:8080"
 
@@ -144,6 +146,7 @@ services:
   prometheus:
     image: prom/prometheus
     volumes:
+     - ./prometheus.yml:/etc/prometheus/prometheus.yml
      - prometheus-volume:/etc/prometheus/
     network_mode: bridge
     ports:
