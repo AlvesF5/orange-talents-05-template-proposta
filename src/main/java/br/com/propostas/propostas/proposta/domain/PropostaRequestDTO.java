@@ -8,6 +8,8 @@ import javax.validation.constraints.Positive;
 
 
 
+
+
 public class PropostaRequestDTO {
 	
 	@NotBlank @CPForCNPJ

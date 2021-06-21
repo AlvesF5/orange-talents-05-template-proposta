@@ -1,6 +1,8 @@
 package br.com.propostas.propostas.analiseproposta.domain;
 
+
 import org.springframework.boot.jackson.JsonComponent;
+
 
 @JsonComponent
 public class RequestAnalise {
@@ -16,7 +18,7 @@ public class RequestAnalise {
 
 
 
-	public RequestAnalise(String documento, String nome, String idProposta) {
+	public RequestAnalise(String documento, String nome, String idProposta) {	
 		this.documento = documento;
 		this.nome = nome;
 		this.idProposta = idProposta;

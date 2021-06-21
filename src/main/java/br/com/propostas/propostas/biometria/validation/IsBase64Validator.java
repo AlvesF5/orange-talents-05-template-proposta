@@ -10,10 +10,7 @@ import java.util.Base64;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-
-
-
-import br.com.propostas.propostas.biometria.BiometriaRequest;
+import br.com.propostas.propostas.biometria.domain.BiometriaRequest;
 
 
 

@@ -9,7 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import br.com.propostas.propostas.biometria.Biometria;
+import br.com.propostas.propostas.biometria.domain.Biometria;
 
 @Entity
 public class Cartao {

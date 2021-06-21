@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 
+
 import br.com.propostas.propostas.cartao.domain.Cartao;
 
 @Entity
@@ -42,7 +43,12 @@ public class Proposta {
 
 
 	public Proposta(String documento, String email, String nome, String endereco, Double salario) {
-		this.documento = documento;
+		
+		TextCrypt textCrypt = new TextCrypt();
+		
+		String documentoCryptografado = textCrypt.queryableText(documento);
+		
+		this.documento = documentoCryptografado;
 		this.email = email;
 		this.nome = nome;
 		this.endereco = endereco;

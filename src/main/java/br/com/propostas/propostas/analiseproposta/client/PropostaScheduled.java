@@ -18,7 +18,7 @@ import br.com.propostas.propostas.cartao.domain.Cartao;
 import br.com.propostas.propostas.cartao.domain.CartaoRepository;
 import br.com.propostas.propostas.proposta.domain.EstadoProposta;
 import br.com.propostas.propostas.proposta.domain.Proposta;
-import br.com.propostas.propostas.repository.PropostaRepository;
+import br.com.propostas.propostas.proposta.repository.PropostaRepository;
 import feign.FeignException;
 
 @Component

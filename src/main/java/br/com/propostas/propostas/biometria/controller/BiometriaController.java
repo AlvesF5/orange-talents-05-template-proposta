@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.propostas.propostas.biometria.Biometria;
-import br.com.propostas.propostas.biometria.BiometriaRequest;
+import br.com.propostas.propostas.biometria.domain.Biometria;
+import br.com.propostas.propostas.biometria.domain.BiometriaRequest;
 import br.com.propostas.propostas.biometria.repository.BiometriaRepository;
 import br.com.propostas.propostas.cartao.domain.Cartao;
 import br.com.propostas.propostas.cartao.domain.CartaoRepository;

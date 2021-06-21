@@ -3,7 +3,7 @@ package br.com.propostas.propostas.carteira.controller;
 import java.net.URI;
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;

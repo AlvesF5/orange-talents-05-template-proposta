@@ -1,4 +1,4 @@
-package br.com.propostas.propostas.biometria;
+package br.com.propostas.propostas.biometria.domain;
 
 import java.time.LocalDateTime;
 

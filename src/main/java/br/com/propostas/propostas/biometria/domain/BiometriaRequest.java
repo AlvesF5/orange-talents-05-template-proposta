@@ -1,9 +1,8 @@
-package br.com.propostas.propostas.biometria;
+package br.com.propostas.propostas.biometria.domain;
 
 
 
 import javax.validation.constraints.NotBlank;
-
 
 import br.com.propostas.propostas.biometria.validation.IsBase64;
 

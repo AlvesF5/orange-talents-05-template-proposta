@@ -1,4 +1,4 @@
-package br.com.propostas.propostas.repository;
+package br.com.propostas.propostas.proposta.repository;
 
 import java.util.List;
 

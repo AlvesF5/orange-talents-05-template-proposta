@@ -1,4 +1,4 @@
-package br.com.propostas.propostas.controller;
+package br.com.propostas.propostas.proposta.controller;
 
 import java.net.URI;
 
@@ -30,7 +30,8 @@ import br.com.propostas.propostas.proposta.domain.EstadoProposta;
 import br.com.propostas.propostas.proposta.domain.Proposta;
 import br.com.propostas.propostas.proposta.domain.PropostaRequestDTO;
 import br.com.propostas.propostas.proposta.domain.PropostaResponse;
-import br.com.propostas.propostas.repository.PropostaRepository;
+import br.com.propostas.propostas.proposta.domain.TextCrypt;
+import br.com.propostas.propostas.proposta.repository.PropostaRepository;
 import feign.FeignException;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
@@ -48,8 +49,10 @@ public class PropostaController {
 	@Autowired
 	private Tracer tracer;
 	
+	
 	private RespostaAnalise respostaAnalise;
 	private RequestAnalise requestAnalise;
+	
 	
 	
 	@PersistenceContext
@@ -69,12 +72,15 @@ public class PropostaController {
 		activeSpan.log("Log Proposta:" + "Usuario: " +activeSpan.getBaggageItem("usuario"));
 		
 		//FIM TRACING
-	
 		
-		Proposta possivelProposta = propostaRepository.findByDocumento(propostaDTO.getDocumento());
+		TextCrypt textCrypt = new TextCrypt();
+		
+			
+		Proposta possivelProposta = propostaRepository.findByDocumento(textCrypt.queryableText(propostaDTO.getDocumento()));
 		
 		
 		if(possivelProposta==null) {
+			
 			
 			Proposta proposta = propostaDTO.transformarParaProposta();
 		    propostaRepository.save(proposta);
@@ -82,8 +88,7 @@ public class PropostaController {
 		    	
 			try {
 				 
-			    requestAnalise = new RequestAnalise(proposta.getDocumento(), proposta.getNome(), proposta.getId().toString());
-			    
+			    requestAnalise = new RequestAnalise(propostaDTO.getDocumento(), proposta.getNome(), proposta.getId().toString());
 			    respostaAnalise = analiseProposta.respostaAnalise(requestAnalise);
 			    	    
 			    proposta.atualizaEstadoProposta(respostaAnalise.getResultadoSolicitacao().retornaResultado());
